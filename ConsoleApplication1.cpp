@@ -2,7 +2,10 @@
 
 # include <iostream>
 # include <cstdlib>
-
+#include <stdlib.h>
+#include <conio.h>
+using namespace std;
+#define size 6
 using namespace std;
 
 /*
@@ -23,7 +26,17 @@ struct node
 
 }*root;
 
-
+struct student
+{
+    int  id;
+    double  grade;
+};
+//////////////////////////////
+struct HashNode
+{
+    struct student  data;
+    struct HashNode* link;
+};
 
 /*
 
@@ -73,12 +86,22 @@ public:
     }
 
 };
-
 /*
 
- * Main Contains Menu
+ * Hash Menu Decelration
 
  */
+void HashMenu();
+/*
+
+ * deleceration Hash Methods in Program , Full Method are in the end Of Program
+
+ */
+int hashfunc(int key);
+int search(int key, struct HashNode* HT[]);
+void insert(struct student rec, struct HashNode* HT[]);
+void display(struct HashNode* HT[]);
+void delete_(int key, struct HashNode* HT[]);
 void treeFunction();
 
 // Design
@@ -91,6 +114,7 @@ void Design()
     cout << "\n\n\t   *********************   \3 i HOPE YOU ENJOY IT \3   ****************************\n\n\n";
     cout << "\n\n\t   ******************************************************************************\n\n\n";
 }
+// Continye or Exit Menu
 void StartExit()
 {
     int x;
@@ -120,7 +144,8 @@ void menu()
     }
     else if (Choice == 2)
     {
-        
+        system("cls");
+        HashMenu();
     }
     else
     {
@@ -723,9 +748,10 @@ int BinaryTree::maxDepth(node* node)
         else return(rDepth + 1);
     }
 }
+int choice, num;
 void treeFunction()
 {
-    int choice, num;
+    
 
     BinaryTree BinaryTree;
 
@@ -883,6 +909,7 @@ void treeFunction()
         case 8:
 
         {
+            system("cls");
             if (root == NULL)
             {
                 cout << "\n\n Tree is empty" << endl;
@@ -897,6 +924,7 @@ void treeFunction()
         case 9:
 
         {
+            system("cls");
             if (root == NULL)
             {
                 cout << "\n\n Tree is empty" << endl;
@@ -911,6 +939,7 @@ void treeFunction()
         case 10:
 
         {
+            system("cls");
             if (root == NULL)
             {
                 cout << "\n\n Tree is empty" << endl;
@@ -925,12 +954,14 @@ void treeFunction()
         }
         case 11:
         {
+            system("cls");
             menu();
             break;
         }
         case 15:
 
         {
+            system("cls");
             exit(1);
         }
 
@@ -943,4 +974,238 @@ void treeFunction()
         }
 
     }
+}
+// hash
+//
+int Id;
+bool flag = false;
+void HashMenu()
+{
+    struct HashNode* HT[size];
+    struct student x;
+    
+    for (int i = 0; i <= size - 1; i++)
+        HT[i] = NULL;
+    while (1)
+
+    {
+
+
+        cout << "-----------------" << endl;
+
+        cout << "Operations on HashTable" << endl;
+
+        cout << "-----------------" << endl;
+
+        cout << "1.Insert ID , Grade " << endl;
+
+        cout << "2.Delete ID " << endl;
+
+        cout << "3.Search ID" << endl;
+
+        cout << "4.Display Hash" << endl;
+
+        cout << "11.Back To Menu " << endl;
+
+        cout << "15.Quit" << endl;
+
+        cout << "Enter your choice : ";
+
+        cin >> choice;
+
+        switch (choice)
+
+        {
+
+        case 1:
+        {
+            system("cls");
+            cout << "\n\n \6 Plz Enter " << size << " Data of Id And Grade Students !\n\n";
+            for (int i = 0; i < size; i++)
+            {
+                cout << "\n " << i+1 << " = Enter Id : "; cin >> x.id;
+                cout << "\n " << i+1 << " = Enter Grade : "; cin >> x.grade;
+                cout << "\n ----------------------------------------------------------\n";
+                insert(x, HT);
+            }
+            flag = true;
+        }
+
+        case 2:
+
+        {
+            system("cls");
+            if (flag)
+            {
+                delete_(15, HT);
+                display(HT);
+            }
+            else
+            {
+                cout << "\n\n There is No Data for Delete , First Insert DAta  ! \n\n";
+            }
+            break;
+        }
+
+        case 3:
+
+        {
+            system("cls");
+            if (flag)
+            {
+                cout << "\n------------------\n";
+                cout << "\6 Enter ID : ";
+                cin >> Id;
+                int pos = search(Id, HT);
+                if (pos == -1)
+                    cout << "Not Found\n";
+                else
+                    cout << "Element Found in Chain:" << pos << endl;
+            }
+             else
+            {
+             cout << "\n\n There is No Data for Search , First Insert Data  ! \n\n";
+            }
+
+            break;
+        }
+
+        case 4:
+
+        {
+            system("cls");
+            if (flag)
+            {
+                cout << "\n\n";
+                display(HT);
+                cout << "\n\n";
+            }
+             else
+            {
+            cout << "\n\n There is No Data for Display , First Insert Data  ! \n\n";
+            }
+            break;
+        }
+        case 11:
+        {
+            system("cls");
+            menu();
+            break;
+        }
+        case 15:
+
+        {
+            system("cls");
+            exit(1);
+        }
+
+        default:
+
+        {
+            cout << "Wrong choice" << endl;
+        }
+
+        }
+    }
+    cout << "\ndelete\n";
+}
+
+int hashfunc(int key)
+{
+    return (key % size);
+}
+
+int search(int key, struct HashNode* HT[])
+{
+    int h;
+    struct HashNode* p;
+    h = hashfunc(key);
+    p = HT[h];
+    while (p != NULL)
+    {
+        if (p->data.id == key)
+            return h;
+        p = p->link;
+    }
+    return -1;
+}
+/////////////////////////////////////////////////////////////////////////// 
+void insert(struct student rec, struct HashNode* HT[])
+{
+    int key, h;
+    struct HashNode* n;
+    key = rec.id;
+
+    if (search(key, HT) != -1)
+    {
+        cout << "Duplicate Key\n";
+        return;
+    }
+
+    h = hashfunc(key);
+    n = new(struct HashNode);
+    n->data = rec;
+    n->link = HT[h];
+    HT[h] = n;
+}
+/////////////////////////////////////////////////////////////////////////// 
+void display(struct HashNode* HT[])
+{
+    int i;
+    struct HashNode* p;
+
+    cout << "\n-----------------------------\n";
+    cout << "Hash Table\n";
+
+    for (i = 0; i < size; i++)
+    {
+        cout << "\n[ " << i << " ]" << "   ";
+        if (HT[i] != NULL)
+        {
+            int count = 1;
+            p = HT[i];
+            while (p != NULL)
+            {
+                cout << count << " : ID = " << p->data.id << "    Grade = " << p->data.grade << "\t\t";
+                p = p->link;
+                count++;
+            }
+        }
+    }
+    cout << "\n";
+}
+/////////////////////////////////////////////////////////////////////////// 
+void delete_(int key, struct HashNode* HT[])
+{
+    int h;
+    struct HashNode* t, * p;
+
+    h = hashfunc(key);
+    if (HT[h] == NULL)
+    {
+        cout << "Not Found\n";
+        return;
+    }
+
+    if (HT[h]->data.id == key)
+    {
+        t = HT[h];
+        HT[h] = HT[h]->link;
+        free(t);
+        return;
+    }
+
+    p = HT[h];
+    while (p->link != NULL)
+    {
+        if (p->link->data.id == key)
+        {
+            t = p->link;
+            p->link = t->link;
+            free(t);
+            return;
+        }
+        p = p->link;
+    }
+    cout << "Not Found\n";
 }
